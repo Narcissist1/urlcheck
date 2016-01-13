@@ -77,8 +77,8 @@ class myThread(threading.Thread):
         self.logger = logger
 
     def run(self):
+    	print 'Thread-%d is Working...' % self.threadID
     	while not self.queue.empty():
-    		print 'Thread-%d is Working...' % self.threadID
 	    	url = self.queue.get()
 	        if url not in VISITED:
 	        	VISITED[url]=1
@@ -91,6 +91,7 @@ class myThread(threading.Thread):
 	        for link in sonlinks:
 	        	self.queue.put(link)
 	        time.sleep(3)
+	    print 'Thread-%d is done.' % self.threadID
 
 
 def main():
