@@ -2,7 +2,9 @@
 # -*- coding=utf8 -*-
 # author-Zack
 
+import logging
 import threading
+import urllib2
 import Queue
 from datetime import datetime as dt
 from urlparse import urlparse
@@ -13,7 +15,7 @@ TARGET_URL = "http://m.sohu.com/"  	# 目标url
 WORKQUEUE = Queue.Queue()  			# 待处理队列
 VISITED = {}  						# url是否处理过
 THREADNUM = 5  						# 线程数
-
+URLCOUNTER = 0
 
 # 设置log文件
 def get_logger(rooturl):
@@ -22,13 +24,12 @@ def get_logger(rooturl):
 	logfilename += '.log'
 	logger = logging.getLogger(logfilename)
 	logger.setLevel(logging.DEBUG)
-	formatter = logging.Formatter(
-	    '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+	formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 	fh = logging.FileHandler(logfilename)
-    fh.setLevel(logging.DEBUG)
-    fh.setFormatter(formatter)
-    logger.addHandler(fh)
-    return logger
+	fh.setLevel(logging.DEBUG)
+	fh.setFormatter(formatter)
+	logger.addHandler(fh)
+	return logger
 
 
 # 广搜函数
@@ -77,25 +78,27 @@ class myThread(threading.Thread):
 
     def run(self):
     	while not self.queue.empty():
+    		print 'Thread-%d is Working...' % self.threadID
 	    	url = self.queue.get()
 	        if url not in VISITED:
 	        	VISITED[url]=1
+	        	URLCOUNTER += 1
 	        	self.queue.task_done()
 	        else:
 	        	self.queue.task_done()
 	        	continue
-	        sonlinks = self.task(url,logger)
+	        sonlinks = self.task(url,self.logger)
 	        for link in sonlinks:
 	        	self.queue.put(link)
 	        time.sleep(3)
 
 
 def main():
-	logger = getLogger(TARGET_URL)
+	logger = get_logger(TARGET_URL)
 	WORKQUEUE.put(TARGET_URL)
 	threads=[]
 	for i in xrange(THREADNUM):
-		t = myThread(i,WORKQUEUE,bfs_path,logger)
+		t = myThread(i+1,WORKQUEUE,bfs_path,logger)
 		t.daemon = True
 		t.start()
 		threads.append(t)
@@ -106,6 +109,7 @@ def main():
 	# 阻塞直到所有任务完成
 	WORKQUEUE.join()
 	print 'Job is done'
+	print "checked %d urls" % URLCOUNTER
 
 if __name__ == '__main__':
 	main()
