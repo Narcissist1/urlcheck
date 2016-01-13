@@ -15,7 +15,6 @@ TARGET_URL = "http://m.sohu.com/"  	# 目标url
 WORKQUEUE = Queue.Queue()  			# 待处理队列
 VISITED = {}  						# url是否处理过
 THREADNUM = 5  						# 线程数
-URLCOUNTER = 0
 
 # 设置log文件
 def get_logger(rooturl):
@@ -36,12 +35,12 @@ def get_logger(rooturl):
 def bfs_path(url,logger):
 	sonlinks = []
 	user_agent='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5)'
-	headers = { 'User-Agent' : user_agent }
+	headers = {'User-Agent':user_agent}
 	req = urllib2.Request(url.encode('utf-8'),headers)
 	try:
 		response = urllib2.urlopen(req)
 		the_page = response.read().decode('utf-8')
-		soup = BeautifulSoup(page,'html.parser')
+		soup = BeautifulSoup(the_page,'html.parser')
 		for link in soup.find_all('a'):
 			templink=link.get('href')
 			if stop_flag(templink):
@@ -82,7 +81,6 @@ class myThread(threading.Thread):
 	    	url = self.queue.get()
 	        if url not in VISITED:
 	        	VISITED[url]=1
-	        	URLCOUNTER += 1
 	        	self.queue.task_done()
 	        else:
 	        	self.queue.task_done()
@@ -91,8 +89,7 @@ class myThread(threading.Thread):
 	        for link in sonlinks:
 	        	self.queue.put(link)
 	        time.sleep(3)
-	    print 'Thread-%d is done.' % self.threadID
-
+	       	print 'Thread-%d is done.' % self.threadID
 
 def main():
 	logger = get_logger(TARGET_URL)
@@ -110,8 +107,7 @@ def main():
 	# 阻塞直到所有任务完成
 	WORKQUEUE.join()
 	print 'Job is done'
-	print "checked %d urls" % URLCOUNTER
+	print "checked %d urls" % len(VISITED)
 
 if __name__ == '__main__':
 	main()
-	
