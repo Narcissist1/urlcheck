@@ -36,9 +36,9 @@ def get_logger(rooturl):
     logger.addHandler(fh)
     return logger
 
-
+# url合法性判断 True返回object, False 返回None
 def urlvalidator(url):
-        # Django validator
+    # Django validator
     regex = re.compile(
         r'^(?:http|ftp)s?://'  # http:// or https://
         # domain...
