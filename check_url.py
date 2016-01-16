@@ -15,10 +15,10 @@ import re
 
 TARGET_HOST = "http://m.sohu.com/"  # 目标url
 WORKQUEUE = Queue.Queue()  			# 待处理队列
-VISITED = {}  						# 已检测url集合
-THREADNUM = 100  					# 线程数
+VISITED = set()  					# 已检测url集合
+THREADNUM = 50  					# 线程数
 queueLock = threading.Lock()		# 锁
-
+CHECK_NUM = 2000                    # 设置检测总数，全部URL数有点多，测试的最多一次，队列里面有21万，VISITED一万
 
 # 设置log文件
 def get_logger(rooturl):
@@ -100,25 +100,23 @@ class myThread(threading.Thread):
 
     def run(self):
         print 'Thread-%d is Working...' % self.threadID
-        while len(VISITED) < 1000:
-        	print 'Queue size %s' % self.queue.qsize()
-        	print 'VISITED size %s' % len(VISITED)
-	        if not self.queue.empty():
-	            url = self.queue.get()
-	            queueLock.acquire()
-	            if url not in VISITED:
-	                VISITED[url] = 1
-	                queueLock.release()
-	            else:
-	            	queueLock.release()
-	                self.queue.task_done()
-	                continue
-	            sonlinks = self.task(url, self.logger)
-	            for link in sonlinks:
-	                self.queue.put(link)
-	            self.queue.task_done()
-	        else:
-			    time.sleep(5)
+        while len(VISITED) < CHECK_NUM:
+            url = self.queue.get()
+            queueLock.acquire()
+            if url not in VISITED:
+                VISITED.add(url)
+                queueLock.release()
+            else:
+            	queueLock.release()
+                self.queue.task_done()
+                continue
+            sonlinks = self.task(url, self.logger)
+            for link in sonlinks:
+                self.queue.put(link)
+            self.queue.task_done()
+            print 'Queue size %s' % self.queue.qsize()
+            print 'VISITED size %s' % len(VISITED)
+            time.sleep(5)
 
 
 def main():
