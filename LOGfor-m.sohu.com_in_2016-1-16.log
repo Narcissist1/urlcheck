@@ -1,0 +1,6 @@
+2016-01-16 15:13:42,409 - LOGfor-m.sohu.com_in_2016-1-16.log - ERROR - HTTPError:404-http://m.sohu.com/f/E3Abama/?_smuid=Av7CvkEPGqQ98RpklNFBZ7&v=2
+2016-01-16 15:13:48,119 - LOGfor-m.sohu.com_in_2016-1-16.log - ERROR - HTTPError:404-http://m.sohu.com/f/Yvuiuaa/?_once_=000025_applications_weibo_v2&_smuid=Av7CvkEPGqQ98RpklNFBZ7&v=2
+2016-01-16 15:13:49,946 - LOGfor-m.sohu.com_in_2016-1-16.log - ERROR - HTTPError:504-http://m.sohu.com/f/SohuApp/?_once_=000098_download_apps&_smuid=Av7CvkEPGqQ98RpklNFBZ7&v=2
+2016-01-16 15:13:51,900 - LOGfor-m.sohu.com_in_2016-1-16.log - ERROR - HTTPError:504-http://m.sohu.com/f/IRBz2ua/?_once_=000025_applications_sogousearch_v2&_smuid=Av7CvkEPGqQ98RpklNFBZ7&v=2
+2016-01-16 15:14:11,501 - LOGfor-m.sohu.com_in_2016-1-16.log - ERROR - URLError:[Errno 8] nodename nor servname provided, or not known-http://m.sohu.com/f/2y2Unma/?_once_=000091_precisionadvert_pd_js&_smuid=Av7CvkEPGqQ98RpklNFBZ7&v=2
+2016-01-16 15:23:23,624 - LOGfor-m.sohu.com_in_2016-1-16.log - INFO - checked 2000 urls
