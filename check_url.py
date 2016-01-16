@@ -100,7 +100,7 @@ class myThread(threading.Thread):
 
     def run(self):
         print 'Thread-%d is Working...' % self.threadID
-        while len(VISITED) < CHECK_NUM:
+        while len(VISITED) < CHECK_NUM and not self.queue.empty():
             url = self.queue.get()
             queueLock.acquire()
             if url not in VISITED:
@@ -116,7 +116,7 @@ class myThread(threading.Thread):
             self.queue.task_done()
             print 'Queue size %s' % self.queue.qsize()
             print 'VISITED size %s' % len(VISITED)
-            time.sleep(5)
+            time.sleep(3)
 
 
 def main():
